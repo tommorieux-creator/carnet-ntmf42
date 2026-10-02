@@ -1844,7 +1844,11 @@ function render() {
   $("#tabs").innerHTML = TABS.map(t => `<button class="tab" role="tab" data-act="tab" data-tab="${t[0]}" aria-selected="${S.tab === t[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[t[0]]}</svg><span>${t[1]}</span></button>`).join("");
   $("#themeBtn").innerHTML = themeIsDark() ? SUN : MOON;
   $("#lvl").innerHTML = lvlChip();
+  const keep = [".weeks", ".sub"].map(sel => { const el = $("#main").querySelector(sel); return [sel, el ? el.scrollLeft : 0]; });
   $("#main").innerHTML = VIEWS[S.tab]();
+  keep.forEach(k => { const el = $("#main").querySelector(k[0]); if (el && k[1]) el.scrollLeft = k[1]; });
+  const wsel = $("#main").querySelector('.weeks [aria-pressed="true"]');
+  if (wsel) { const box = wsel.parentElement, l = wsel.offsetLeft - box.offsetLeft, r = l + wsel.offsetWidth; if (l < box.scrollLeft || r > box.scrollLeft + box.clientWidth) box.scrollLeft = Math.max(0, l - (box.clientWidth - wsel.offsetWidth) / 2); }
   bindDrop();
 }
 let renderTimer = 0;
